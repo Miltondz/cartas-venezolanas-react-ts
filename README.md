@@ -1,46 +1,80 @@
-# Getting Started with Create React App
+# Cartas Venezolanas
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Plataforma de mini-juegos de cartas con baraja española de 40 cartas. React 18 + TypeScript, sin router, navegación por strings.
 
-## Available Scripts
+## Juegos incluidos
 
-In the project directory, you can run:
+| Juego | Descripción |
+|-------|-------------|
+| **Siete y Medio** | Acércate a 7½ sin pasarte. Figuras valen ½ punto. |
+| **Brisca** | Captura cartas de valor con el palo de triunfo. |
+| **Chinchón** | Forma escaleras o grupos con 7 cartas. Cierra cuando ganes. |
+| **Veintiuno** | Llega a 21 sin pasarte. Blackjack 2 cartas paga 3:2. |
 
-### `npm start`
+Cada juego incluye 7 oponentes con IA de personalidad, apuestas, avatares con moods y selección de baraja/mesa.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Comandos
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+```bash
+npm start                   # dev server (CRA, port 3000)
+PORT=3003 npm start         # puerto alternativo
+CI=false npm run build      # build producción
+npx tsc --noEmit            # type-check
+```
 
-### `npm test`
+## Stack
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- React 18 / TypeScript / CRA (react-scripts)
+- Sin react-router — navegación string-based en `App.tsx`
+- Baraja española 40 cartas (sin 8 y 9; figuras: 10=Sota, 11=Caballo, 12=Rey)
+- 4 mazos visuales: default, europea, moderna, especial
+- 4 tableros: cama, mesa, grama, salon
 
-### `npm run build`
+## Arquitectura
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```
+src/
+  App.tsx                    # routing, screen state
+  components/
+    MainScreen.tsx            # menú principal
+    SieteMedioScreen.tsx
+    BriscaScreen.tsx
+    ChinchonScreen.tsx
+    VeintiunoScreen.tsx
+  utils/
+    sieteMedioLogic.ts        # engine 7½
+    briscaLogic.ts            # engine brisca
+    chinchonLogic.ts          # engine chinchón (melds, cierre)
+    veintiunoLogic.ts         # engine 21 (As 1/11, dealer@17, BJ 3:2)
+    avatarMoods.ts            # mood transitions + fallback paths
+    cards.ts                  # definición baraja + shuffle
+  data/
+    aiCharacters.ts           # 7 oponentes IA (activo: true/false)
+  types/index.ts              # tipos compartidos, DECKS, BOARDS, AVATARS
+  styles/
+    App.css                   # reset global + game-canvas
+    components.css            # todos los estilos (.sm-*, .brisca-*, .chinchon-*, .cv-*)
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Mobile
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- Responsive: 375px (iPhone SE) → 768px (tablet) → 1024px+ (desktop)
+- Cartas: 62×87px (≤480px) · 80×112px (≤768px) · 100×140px (≥1024px) — mismo tamaño en todos los juegos
+- Mano del jugador: máximo 4 cartas por fila, overflow en segunda fila
+- Setup: tabs BARAJA / MESA / OPONENTE en móvil; layout plano en desktop
+- Canvas fullscreen en móvil (`position: fixed; 100vw × 100vh`)
 
-### `npm run eject`
+## Rutas de imágenes
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+```
+public/images/
+  card-back.jpg
+  cover.mp4 / cover-mobile.mp4
+  cover.jpg / cover-mobile.jpg
+  decks/{default,europea,moderna,especial}/deck-preview.jpg
+  backgrounds/{tablero-cama,mesa,grama,salon}.jpg
+  avatars/avatar{1-7}-{default,happy,sad,smug}.jpg
+          player-{default,happy,sad,smug}.jpg
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+Solo `avatar1` tiene los 4 moods; los demás hacen fallback a `avatar1-{mood}.jpg` vía `getSmartFallbackPath`.

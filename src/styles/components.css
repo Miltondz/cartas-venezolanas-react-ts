@@ -8971,15 +8971,16 @@ html, body {
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  gap: 10px;
-  max-width: 100%;
+  gap: 8px;
+  /* max 4 cards per row: 4×80 + 3×8 */
+  max-width: 352px;
   min-width: 0;
 }
 
 .sm-card {
-  width: 100px;
-  height: 140px;
-  border-radius: 8px;
+  width: 80px;
+  height: 112px;
+  border-radius: 6px;
   object-fit: cover;
   box-shadow: 0 6px 18px rgba(0,0,0,0.85), 0 0 0 1px rgba(0,0,0,0.5);
   border: 2px solid rgba(255,255,255,0.45);
@@ -9000,9 +9001,9 @@ html, body {
 }
 
 .sm-card-back {
-  width: 100px;
-  height: 140px;
-  border-radius: 8px;
+  width: 80px;
+  height: 112px;
+  border-radius: 6px;
   background: linear-gradient(135deg, #1a1a4e 0%, #2d1b69 50%, #1a1a4e 100%);
   border: 2px solid rgba(0,255,255,0.55);
   box-shadow: 0 6px 18px rgba(0,0,0,0.85), 0 0 0 1px rgba(0,0,0,0.5);
@@ -9013,10 +9014,10 @@ html, body {
 }
 
 .sm-card-back-inner {
-  width: 82px;
-  height: 118px;
+  width: 64px;
+  height: 90px;
   border: 2px solid rgba(0,255,255,0.3);
-  border-radius: 5px;
+  border-radius: 4px;
   background: repeating-linear-gradient(
     45deg,
     rgba(0,255,255,0.05) 0px,
@@ -9407,7 +9408,12 @@ html, body {
 
   .sm-card-back-inner {
     width: 64px;
-    height: 94px;
+    height: 90px;
+  }
+
+  /* hand wrap at 80px cards + 8px gap: 4×80 + 3×8 = 352px */
+  .sm-cards {
+    max-width: 352px;
   }
 
   .sm-total {
@@ -9471,13 +9477,18 @@ html, body {
   }
 
   .sm-card {
-    width: 68px;
-    height: 95px;
+    width: 62px;
+    height: 87px;
   }
 
   .sm-card-back {
-    width: 68px;
-    height: 95px;
+    width: 62px;
+    height: 87px;
+  }
+
+  .sm-card-back-inner {
+    width: 48px;
+    height: 70px;
   }
 
   /* Very narrow: collapse header stats — hide labels, inline value */
@@ -9876,9 +9887,9 @@ html, body {
 
 /* ── Cards ── */
 .brisca-card {
-  width: 100px;
-  height: 140px;
-  border-radius: 7px;
+  width: 80px;
+  height: 112px;
+  border-radius: 6px;
   object-fit: cover;
   border: 2px solid rgba(255,255,255,0.45);
   box-shadow: 0 6px 18px rgba(0,0,0,0.85), 0 0 0 1px rgba(0,0,0,0.5);
@@ -9897,8 +9908,8 @@ html, body {
 }
 
 .brisca-card-back-inner {
-  width: 82px;
-  height: 118px;
+  width: 64px;
+  height: 90px;
   border: 2px solid rgba(0,255,255,0.25);
   border-radius: 4px;
   background: repeating-linear-gradient(
@@ -10030,24 +10041,24 @@ html, body {
   }
 
   .brisca-card {
-    width: 46px;
-    height: 64px;
-    border-radius: 5px;
+    width: 80px;
+    height: 112px;
+    border-radius: 6px;
   }
 
   .brisca-card-back {
-    width: 46px;
-    height: 64px;
+    width: 80px;
+    height: 112px;
   }
 
   .brisca-card-back-inner {
-    width: 36px;
-    height: 54px;
+    width: 64px;
+    height: 90px;
   }
 
   .brisca-empty-slot {
-    width: 46px;
-    height: 64px;
+    width: 80px;
+    height: 112px;
   }
 
   .brisca-trump-card {
@@ -10070,18 +10081,23 @@ html, body {
 
 @media (max-width: 400px) {
   .brisca-card {
-    width: 40px;
-    height: 56px;
+    width: 62px;
+    height: 87px;
   }
 
   .brisca-card-back {
-    width: 40px;
-    height: 56px;
+    width: 62px;
+    height: 87px;
+  }
+
+  .brisca-card-back-inner {
+    width: 48px;
+    height: 70px;
   }
 
   .brisca-empty-slot {
-    width: 40px;
-    height: 56px;
+    width: 62px;
+    height: 87px;
   }
 
   .brisca-hand {
@@ -10857,7 +10873,7 @@ html, body {
   .sm-panel-img-deck {
     /* Let card render at natural ratio — no crop */
     height: auto;
-    max-height: 160px;
+    max-height: 110px;
   }
   .sm-panel-img-board {
     aspect-ratio: 16 / 9;
@@ -10896,42 +10912,46 @@ html, body {
     display: none !important;
   }
 
-  /* T7 — Chinchon full hand: horizontal scroll on mobile */
+  /* T7 — Chinchon hand: wrap to 2 rows (4 per row) */
   .chinchon-hand {
-    flex-wrap: nowrap;
-    overflow: auto !important;
-    justify-content: flex-start;
-    padding-bottom: 4px;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
+    flex-wrap: wrap;
+    overflow: visible;
+    justify-content: center;
+    /* max 4 cards per row: 4×80 + 3×6 */
+    max-width: 338px;
   }
-  .chinchon-hand::-webkit-scrollbar {
-    display: none;
-  }
-  /* Allow sm-cards to scroll when it holds the chinchon hand */
   .sm-player-area .sm-cards,
   .sm-dealer-area .sm-cards {
     overflow: visible;
   }
 
-  /* T6 — Chinchon card 2x on 768px */
+  /* T6 — Chinchon card standard size on 768px */
   .chinchon-card {
-    width: 72px;
-    height: 101px;
+    width: 80px;
+    height: 112px;
     flex-shrink: 0;
   }
   .chinchon-card-back {
-    width: 72px;
-    height: 101px;
+    width: 80px;
+    height: 112px;
     flex-shrink: 0;
   }
   .chinchon-card-back-inner {
-    width: 58px;
-    height: 82px;
+    width: 64px;
+    height: 90px;
   }
 }
 
 @media (max-width: 480px) {
+  /* Hand wrap at 62px cards + 6px gap: 4×62 + 3×6 = 266px */
+  .chinchon-hand {
+    max-width: 270px;
+  }
+  .sm-cards {
+    max-width: 272px;
+    gap: 6px;
+  }
+
   /* T6 — Chinchon card sizes at 480px */
   .chinchon-card {
     width: 62px;
@@ -11095,10 +11115,18 @@ html, body {
 }
 
 /* Mobile: tighter grid */
+@media (max-width: 768px) {
+  .cv-main-container {
+    /* Reserve bottom clearance for Safari's bottom toolbar (~44px) and home indicator */
+    padding-bottom: max(56px, calc(env(safe-area-inset-bottom, 0px) + 2rem));
+  }
+}
+
 @media (max-width: 480px) {
   .cv-main-container {
     gap: 1.2rem;
     padding: 1.5rem 1rem;
+    padding-bottom: max(56px, calc(env(safe-area-inset-bottom, 0px) + 1.5rem));
   }
   .cv-games-grid {
     gap: 0.8rem;
