@@ -463,58 +463,56 @@ const BriscaScreen: React.FC<BaseScreenProps> = ({ onNavigate }) => {
           style={{ backgroundImage: `url(/images/backgrounds/${selectedBoard})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
         >
           {/* Header bar */}
-          <div className="brisca-header">
+          <div className="sm-header">
             <span className="game-name-badge">🎴 Brisca</span>
             {gs.trumpCard && (
-              <div className="brisca-trump">
-                <span className="brisca-trump-label">Triunfo</span>
+              <div className="sm-stat">
+                <span className="sm-stat-label">Triunfo</span>
                 <img
                   src={cardImg(gs.trumpCard)}
                   alt={gs.trumpCard.name}
-                  className="brisca-trump-card"
+                  className="brisca-trump-mini"
                   onError={e => { (e.target as HTMLImageElement).src = fallbackImg(gs.trumpCard!); }}
                 />
               </div>
             )}
-            <div className="brisca-scores">
-              <div className="brisca-score">
-                <span className="brisca-score-label">{opponent?.name ?? 'Dealer'}</span>
-                <span className="brisca-score-val">{computerScore}</span>
-              </div>
-              <div className="brisca-deck-count">
-                <span className="brisca-deck-icon">🂠</span>
-                <span>{gs.deck.length}</span>
-              </div>
-              <div className="brisca-score">
-                <span className="brisca-score-label">Tú</span>
-                <span className="brisca-score-val brisca-score-mine">{playerScore}</span>
-              </div>
+            <div className="sm-stat">
+              <span className="sm-stat-label">Mazo</span>
+              <span className="sm-stat-value">🂠 {gs.deck.length}</span>
             </div>
-            <div className="brisca-session">
-              <span className="brisca-win-badge">✓{gs.gamesWon}</span>
-              <span className="brisca-lose-badge">✗{gs.gamesLost}</span>
+            <div className="sm-stat">
+              <span className="sm-stat-label">Ganadas</span>
+              <span className="sm-stat-value sm-wins">{gs.gamesWon}</span>
+            </div>
+            <div className="sm-stat">
+              <span className="sm-stat-label">Perdidas</span>
+              <span className="sm-stat-value sm-losses">{gs.gamesLost}</span>
             </div>
           </div>
 
-          {/* Computer hand (face down) */}
-          <div className="brisca-computer-area">
-            <div className="brisca-avatar-row">
+          {/* Dealer area: avatar top-left | face-down cards | score top-right */}
+          <div className="sm-dealer-area">
+            <div className="sm-area-label">
               {opponent && (
                 <img
                   src={aiAvatarSrc}
                   alt={opponent.name}
-                  className="brisca-avatar"
+                  className="sm-avatar"
                   onError={e => { (e.target as HTMLImageElement).src = aiAvatarFallback; }}
                 />
               )}
-              <span className="brisca-area-name">{opponent?.name}</span>
+              <span>{opponent?.name ?? 'Dealer'}</span>
             </div>
-            <div className="brisca-hand brisca-hand-computer">
+            <div className="sm-cards">
               {gs.computerHand.map((_, i) => (
                 <div key={i} className="brisca-card brisca-card-back">
                   <div className="brisca-card-back-inner" />
                 </div>
               ))}
+            </div>
+            <div className="sm-total-wrapper">
+              <span className="sm-total-label">Puntos</span>
+              <div className="sm-total">{computerScore}</div>
             </div>
           </div>
 
@@ -559,18 +557,13 @@ const BriscaScreen: React.FC<BaseScreenProps> = ({ onNavigate }) => {
             </div>
           </div>
 
-          {/* Player hand */}
-          <div className="brisca-player-area">
-            <div className="brisca-avatar-row">
-              <img
-                src={playerAvatarSrc}
-                alt="Tú"
-                className="brisca-avatar"
-                onError={e => { (e.target as HTMLImageElement).src = '/images/avatars/player-default.jpg'; }}
-              />
-              <span className="brisca-area-name">Tú</span>
+          {/* Player area: score bottom-left | player cards | avatar bottom-right */}
+          <div className="sm-player-area">
+            <div className="sm-total-wrapper">
+              <span className="sm-total-label">Puntos</span>
+              <div className="sm-total">{playerScore}</div>
             </div>
-            <div className="brisca-hand brisca-hand-player">
+            <div className="sm-cards">
               {gs.playerHand.map((card, i) => (
                 <img
                   key={i}
@@ -587,12 +580,14 @@ const BriscaScreen: React.FC<BaseScreenProps> = ({ onNavigate }) => {
                 />
               ))}
             </div>
-            <div className="brisca-area-name brisca-you-label">
-              {gs.subPhase === 'player-lead' && 'Tú líderas — elige una carta'}
-              {gs.subPhase === 'player-respond' && 'Responde al dealer'}
-              {gs.subPhase === 'trick-resolution' && 'Resolviendo baza...'}
-              {gs.subPhase === 'computer-lead' && 'El dealer está pensando...'}
-              {gs.subPhase === 'game-over' && 'Partida terminada'}
+            <div className="sm-area-label">
+              <img
+                src={playerAvatarSrc}
+                alt="Tú"
+                className="sm-avatar"
+                onError={e => { (e.target as HTMLImageElement).src = '/images/avatars/player-default.jpg'; }}
+              />
+              <span>Tú</span>
             </div>
           </div>
         </div>

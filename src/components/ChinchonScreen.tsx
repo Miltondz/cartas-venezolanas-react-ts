@@ -504,41 +504,41 @@ const ChinchonScreen: React.FC<BaseScreenProps> = ({ onNavigate }) => {
           style={{ backgroundImage: `url(/images/backgrounds/${selectedBoard})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
         >
           {/* Header */}
-          <div className="chinchon-header">
+          <div className="sm-header">
             <span className="game-name-badge">🃏 Chinchón</span>
-            <div className="chinchon-score-block">
-              <span className="chinchon-score-name">{opponent?.name ?? 'Dealer'}</span>
-              <span className="chinchon-score-pts">{gs.aiTotal}</span>
+            <div className="sm-stat">
+              <span className="sm-stat-label">Ronda</span>
+              <span className="sm-stat-value">{gs.roundsPlayed}</span>
             </div>
-            <div className="chinchon-round-info">
-              <span className="chinchon-round-label">Ronda {gs.roundsPlayed}</span>
-              <span className="chinchon-limit-label">límite {SCORE_LIMIT}</span>
-            </div>
-            <div className="chinchon-score-block chinchon-score-mine">
-              <span className="chinchon-score-name">Tú</span>
-              <span className="chinchon-score-pts">{gs.playerTotal}</span>
+            <div className="sm-stat">
+              <span className="sm-stat-label">Límite</span>
+              <span className="sm-stat-value">{SCORE_LIMIT} pts</span>
             </div>
           </div>
 
-          {/* Opponent area */}
-          <div className="chinchon-opponent-area">
-            <div className="chinchon-avatar-row">
+          {/* Dealer area: avatar top-left | face-down cards | score top-right */}
+          <div className="sm-dealer-area">
+            <div className="sm-area-label">
               {opponent && (
                 <img
                   src={aiAvatarSrc}
                   alt={opponent.name}
-                  className="chinchon-avatar"
+                  className="sm-avatar"
                   onError={e => { (e.target as HTMLImageElement).src = aiAvatarFallback; }}
                 />
               )}
-              <span className="chinchon-area-label">{gs.aiHand.length} cartas</span>
+              <span>{opponent?.name ?? 'Dealer'}</span>
             </div>
-            <div className="chinchon-hand chinchon-hand-ai">
+            <div className="sm-cards">
               {gs.aiHand.map((_, i) => (
                 <div key={i} className="chinchon-card chinchon-card-back">
                   <div className="chinchon-card-back-inner" />
                 </div>
               ))}
+            </div>
+            <div className="sm-total-wrapper">
+              <span className="sm-total-label">Puntos</span>
+              <div className="sm-total">{gs.aiTotal}</div>
             </div>
           </div>
 
@@ -592,52 +592,56 @@ const ChinchonScreen: React.FC<BaseScreenProps> = ({ onNavigate }) => {
             </div>
           </div>
 
-          {/* Player hand */}
-          <div className="chinchon-player-area">
-            <div className="chinchon-avatar-row">
+          {/* Player area: score bottom-left | hand+controls center | avatar bottom-right */}
+          <div className="sm-player-area">
+            <div className="sm-total-wrapper">
+              <span className="sm-total-label">Puntos</span>
+              <div className="sm-total">{gs.playerTotal}</div>
+            </div>
+            <div className="sm-cards" style={{ flexDirection: 'column', alignItems: 'stretch', padding: 0, gap: 4 }}>
+              <div className="chinchon-hand chinchon-hand-player">
+                {gs.playerHand.map((card, i) => (
+                  <div key={i} className="chinchon-card-wrap">
+                    <img
+                      src={cardImg(card)}
+                      alt={card.name}
+                      className={[
+                        'chinchon-card',
+                        gs.phase === 'discard' && !gs.isProcessing ? 'chinchon-card-selectable' : '',
+                        card === gs.drawnCard ? 'chinchon-card-drawn' : '',
+                        cardInMeld(card) ? 'chinchon-card-meld' : '',
+                      ].join(' ')}
+                      onClick={() => gs.phase === 'discard' && !gs.isProcessing && handleDiscardAndMaybeClose(i)}
+                      onError={e => { (e.target as HTMLImageElement).src = fallbackImg(card); }}
+                      title={`${card.name} · ${chinchonCardValue(card)}pts`}
+                    />
+                    {cardInMeld(card) && <div className="chinchon-meld-dot" />}
+                  </div>
+                ))}
+              </div>
+              <div className="chinchon-controls">
+                {canClose && (
+                  <button
+                    className={`chinchon-close-btn ${closePending ? 'chinchon-close-active' : ''}`}
+                    onClick={handleToggleClose}
+                  >
+                    {closePending ? '↩ Cancelar Cierre' : '🏁 Cerrar'}
+                  </button>
+                )}
+                <span className="chinchon-dw-label">
+                  {gs.phase === 'discard' && `Puntos muertos: ${playerDw}`}
+                  {gs.phase === 'draw' && 'Tu turno — roba'}
+                </span>
+              </div>
+            </div>
+            <div className="sm-area-label">
               <img
                 src={playerAvatarSrc}
                 alt="Tú"
-                className="chinchon-avatar"
+                className="sm-avatar"
                 onError={e => { (e.target as HTMLImageElement).src = '/images/avatars/player-default.jpg'; }}
               />
-              <span className="chinchon-area-label">Tú</span>
-            </div>
-            <div className="chinchon-hand chinchon-hand-player">
-              {gs.playerHand.map((card, i) => (
-                <div key={i} className="chinchon-card-wrap">
-                  <img
-                    src={cardImg(card)}
-                    alt={card.name}
-                    className={[
-                      'chinchon-card',
-                      gs.phase === 'discard' && !gs.isProcessing ? 'chinchon-card-selectable' : '',
-                      card === gs.drawnCard ? 'chinchon-card-drawn' : '',
-                      cardInMeld(card) ? 'chinchon-card-meld' : '',
-                    ].join(' ')}
-                    onClick={() => gs.phase === 'discard' && !gs.isProcessing && handleDiscardAndMaybeClose(i)}
-                    onError={e => { (e.target as HTMLImageElement).src = fallbackImg(card); }}
-                    title={`${card.name} · ${chinchonCardValue(card)}pts`}
-                  />
-                  {cardInMeld(card) && <div className="chinchon-meld-dot" />}
-                </div>
-              ))}
-            </div>
-
-            {/* Controls row */}
-            <div className="chinchon-controls">
-              {canClose && (
-                <button
-                  className={`chinchon-close-btn ${closePending ? 'chinchon-close-active' : ''}`}
-                  onClick={handleToggleClose}
-                >
-                  {closePending ? '↩ Cancelar Cierre' : '🏁 Cerrar'}
-                </button>
-              )}
-              <span className="chinchon-dw-label">
-                {gs.phase === 'discard' && `Puntos muertos: ${playerDw}`}
-                {gs.phase === 'draw' && 'Tu turno — roba'}
-              </span>
+              <span>Tú</span>
             </div>
           </div>
 
