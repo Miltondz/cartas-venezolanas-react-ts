@@ -10521,7 +10521,8 @@ html, body {
 /* ── Responsive ── */
 @media (max-width: 768px) {
   .chinchon-game {
-    grid-template-rows: 44px minmax(110px, 1fr) minmax(90px, 1.1fr) minmax(120px, 1.1fr) auto;
+    grid-template-rows: 44px minmax(110px, 240px) minmax(140px, 175px) minmax(150px, 210px) auto;
+    align-content: start;
     padding: 0 0.35rem;
     gap: 2px;
   }
